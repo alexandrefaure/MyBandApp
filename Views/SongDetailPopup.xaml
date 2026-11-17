@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyBandApp.Views.SongDetailPopup"
+             BackgroundColor="#0F1115"
+             Title="Détails du morceau">
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="16">
+
+            <!-- Titre et Artiste -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="{Binding CurrentSong.Title}" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
+                <Label Text="{Binding CurrentSong.Artist}" FontSize="16" TextColor="#94A3B8" />
+            </VerticalStackLayout>
+
+            <!-- Infos techniques (Tonalité, BPM, Durée) -->
+            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+                <Border Grid.Column="0" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
+                    <VerticalStackLayout>
+                        <Label Text="Tonalité" FontSize="11" TextColor="#94A3B8" />
+                        <Label Text="{Binding CurrentSong.Key}" FontSize="16" FontAttributes="Bold" TextColor="#C4B5FD" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="1" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
+                    <VerticalStackLayout>
+                        <Label Text="BPM" FontSize="11" TextColor="#94A3B8" />
+                        <Label Text="{Binding CurrentSong.Bpm}" FontSize="16" FontAttributes="Bold" TextColor="#FCD34D" />
+                    </VerticalStackLayout>
+                </Border>
+                <Border Grid.Column="2" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
+                    <VerticalStackLayout>
+                        <Label Text="Durée" FontSize="11" TextColor="#94A3B8" />
+                        <Label Text="{Binding CurrentSong.FormattedDuration}" FontSize="16" FontAttributes="Bold" TextColor="#CBD5E1" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Section Liens YouTube -->
+            <VerticalStackLayout Spacing="8" Margin="0,10,0,0">
+                <Label Text="Liens YouTube (tutos, covers, lives...)" FontSize="16" FontAttributes="Bold" TextColor="#F59E0B" />
+
+                <Editor Placeholder="Colle tes liens YouTube ici (un par ligne ou séparés par des virgules)..."
+                        Text="{Binding EditableYoutubeLinks}"
+                        BackgroundColor="#1A1D24"
+                        TextColor="White"
+                        PlaceholderColor="#64748B"
+                        HeightRequest="120"
+                        AutoSize="TextChanges" />
+            </VerticalStackLayout>
+
+            <!-- Boutons d'action -->
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,20,0,0">
+                <Button Text="Enregistrer"
+                        Clicked="OnSaveClicked"
+                        BackgroundColor="#10B981"
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        CornerRadius="10"
+                        WidthRequest="150" />
+
+                <Button Text="Fermer"
+                        Clicked="OnCloseClicked"
+                        BackgroundColor="#334155"
+                        TextColor="White"
+                        CornerRadius="10"
+                        WidthRequest="120" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

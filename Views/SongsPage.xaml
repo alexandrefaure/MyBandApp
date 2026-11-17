@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyBandApp.ViewModels"
+             xmlns:models="clr-namespace:MyBandApp.Models"
+             x:Class="MyBandApp.Views.SongsPage"
+             x:DataType="vm:SongsViewModel"
+             BackgroundColor="#0F1115"
+             Title="Répertoire">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16" RowSpacing="14">
+
+        <!-- 1. EN-TÊTE & BOUTON D'AJOUT -->
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Répertoire du groupe"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="#F8FAFC" />
+                <Label Text="{Binding FilteredSongs.Count, StringFormat='{0} morceaux disponibles'}"
+                       FontSize="13"
+                       TextColor="#94A3B8" />
+            </VerticalStackLayout>
+
+            <Button Grid.Column="1"
+                    Text="+ Morceau"
+                    Command="{Binding ToggleAddFormCommand}"
+                    BackgroundColor="#F59E0B"
+                    TextColor="#0F1115"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    Padding="16,10" />
+        </Grid>
+
+        <!-- 2. BARRE DE RECHERCHE + FORMULAIRE D'AJOUT DÉPLIABLE -->
+        <VerticalStackLayout Grid.Row="1" Spacing="12">
+            <Border BackgroundColor="#1A1D24"
+                    Stroke="#2A2F3A"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="12,4">
+                <SearchBar Placeholder="Rechercher un titre, un artiste, une tonalité..."
+                           PlaceholderColor="#64748B"
+                           TextColor="#F8FAFC"
+                           CancelButtonColor="#F59E0B"
+                           Text="{Binding SearchText}" />
+            </Border>
+
+            <!-- Formulaire d'ajout rapide -->
+            <Border IsVisible="{Binding IsAddFormVisible}"
+                    BackgroundColor="#1A1D24"
+                    Stroke="#F59E0B"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 14"
+                    Padding="16">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Nouveau morceau" FontAttributes="Bold" FontSize="16" TextColor="#F59E0B" />
+
+                    <Entry Placeholder="Titre du morceau (ex: Superstition)"
+                           Text="{Binding NewTitle}"
+                           TextColor="White"
+                           PlaceholderColor="#64748B" />
+
+                    <Entry Placeholder="Artiste (ex: Stevie Wonder)"
+                           Text="{Binding NewArtist}"
+                           TextColor="White"
+                           PlaceholderColor="#64748B" />
+
+                    <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0">
+                            <Label Text="Tonalité" FontSize="11" TextColor="#94A3B8" />
+                            <Entry Placeholder="Ebm" Text="{Binding NewKey}" TextColor="White" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label Text="BPM" FontSize="11" TextColor="#94A3B8" />
+                            <Entry Placeholder="101" Keyboard="Numeric" Text="{Binding NewBpm}" TextColor="White" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="2">
+                            <Label Text="Durée (sec)" FontSize="11" TextColor="#94A3B8" />
+                            <Entry Placeholder="245" Keyboard="Numeric" Text="{Binding NewDurationSeconds}" TextColor="White" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Text="Enregistrer dans Supabase"
+                            Command="{Binding AddSongCommand}"
+                            BackgroundColor="#10B981"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            Margin="0,6,0,0" />
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- 3. LISTE DES MORCEAUX -->
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding LoadSongsCommand}"
+                     RefreshColor="#F59E0B">
+            <CollectionView ItemsSource="{Binding FilteredSongs}"
+                            SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8" Padding="24">
+                        <Label Text="Aucun morceau trouvé" FontSize="16" FontAttributes="Bold" TextColor="#94A3B8" HorizontalOptions="Center" />
+                        <Label Text="Ajoute ton premier titre ou tire vers le bas pour actualiser." FontSize="13" TextColor="#64748B" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Song">
+                        <SwipeView Margin="0,0,0,10">
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Supprimer"
+                                               BackgroundColor="#EF4444"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SongsViewModel}}, Path=DeleteSongCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Border BackgroundColor="#1A1D24"
+                                    Stroke="#262B36"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="16,14">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SongsViewModel}}, Path=OpenDetailCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12" VerticalOptions="Center">
+
+                                    <!-- Infos principales -->
+                                    <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                        <Label Text="{Binding Title}"
+                                               FontSize="17"
+                                               FontAttributes="Bold"
+                                               TextColor="#F8FAFC"
+                                               LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Artist}"
+                                               FontSize="14"
+                                               TextColor="#94A3B8"
+                                               LineBreakMode="TailTruncation" />
+                                    </VerticalStackLayout>
+
+                                    <!-- Badges techniques (Tonalité, BPM, Durée) -->
+                                    <HorizontalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                        <!-- Badge Tonalité -->
+                                        <Border BackgroundColor="#2E1065" Stroke="#7C3AED" StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                            <Label Text="{Binding Key}" FontSize="12" FontAttributes="Bold" TextColor="#C4B5FD" />
+                                        </Border>
+
+                                        <!-- Badge BPM -->
+                                        <Border BackgroundColor="#451A03" Stroke="#D97706" StrokeThickness="1" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                            <Label Text="{Binding Bpm, StringFormat='{0} BPM'}" FontSize="12" FontAttributes="Bold" TextColor="#FCD34D" />
+                                        </Border>
+
+                                        <!-- Badge Durée -->
+                                        <Border BackgroundColor="#1E293B" StrokeThickness="0" StrokeShape="RoundRectangle 8" Padding="8,4">
+                                            <Label Text="{Binding FormattedDuration}" FontSize="12" TextColor="#CBD5E1" />
+                                        </Border>
+                                    </HorizontalStackLayout>
+
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+    </Grid>
+</ContentPage>
