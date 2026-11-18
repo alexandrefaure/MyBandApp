@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyBandApp.Views.DashboardPage"
+             BackgroundColor="#0F1115"
+             Shell.NavBarIsVisible="False"
+             Title="Accueil">
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="24">
+
+            <!-- En-tête du groupe -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Groovin'Soul 🎸" FontSize="26" FontAttributes="Bold" TextColor="#F8FAFC" />
+                <Label Text="Gestion de groupe &amp; conducteur de scène" FontSize="14" TextColor="#94A3B8" />
+            </VerticalStackLayout>
+
+            <!-- Cartes d'accès rapide -->
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                <!-- Carte Répertoire -->
+                <Border Grid.Column="0" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 14" Padding="16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnGoToSongsClicked" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="🎵" FontSize="22" />
+                        <Label Text="Répertoire" FontSize="16" FontAttributes="Bold" TextColor="#F8FAFC" />
+                        <Label Text="Morceaux, BPM, tonalités, liens" FontSize="12" TextColor="#94A3B8" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Carte Setlists -->
+                <Border Grid.Column="1" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 14" Padding="16">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnGoToSetlistsClicked" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📋" FontSize="22" />
+                        <Label Text="Setlists" FontSize="16" FontAttributes="Bold" TextColor="#F8FAFC" />
+                        <Label Text="Préparer les sets de concert" FontSize="12" TextColor="#94A3B8" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <!-- Section Prochain Live / Rappel rapide -->
+            <Border BackgroundColor="#1A1D24" Stroke="#F59E0B" StrokeThickness="1" StrokeShape="RoundRectangle 14" Padding="18">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="💡 Astuce du jour" FontSize="15" FontAttributes="Bold" TextColor="#F59E0B" />
+                    <Label Text="Clique sur n'importe quel morceau dans ton répertoire pour y ajouter tes liens YouTube (covers, tutos, versions live) !" FontSize="13" TextColor="#CBD5E1" />
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

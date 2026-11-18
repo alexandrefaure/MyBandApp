@@ -17,6 +17,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<MyBandApp.Services.SongService>();
         builder.Services.AddTransient<MyBandApp.ViewModels.SongsViewModel>();
         builder.Services.AddTransient<MyBandApp.Views.SongsPage>();
+        builder.Services.AddTransient<MyBandApp.Views.DashboardPage>();
+        builder.Services.AddTransient<MyBandApp.Views.SetlistsPage>();
 
         // Configuration Supabase
         var url = "https://ttujmufkxsoxpfvqkabl.supabase.co";

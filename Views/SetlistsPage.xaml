@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyBandApp.Views.SetlistsPage"
+             BackgroundColor="#0F1115"
+             Shell.NavBarIsVisible="False"
+             Title="Setlists">
+
+    <Grid Padding="20" RowDefinitions="Auto, *">
+        <!-- En-tête -->
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center" Margin="0,0,0,16">
+            <VerticalStackLayout Spacing="2">
+                <Label Text="Concerts &amp; Répets" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
+                <Label Text="Gère tes listes de morceaux par set" FontSize="13" TextColor="#94A3B8" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="+ Setlist"
+                    BackgroundColor="#F59E0B"
+                    TextColor="#0F1115"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    Padding="14,8" />
+        </Grid>
+
+        <!-- Liste vide en attendant l'implémentation complète -->
+        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+            <Label Text="🎸" FontSize="40" HorizontalOptions="Center" />
+            <Label Text="Aucune setlist pour l'instant" FontSize="16" FontAttributes="Bold" TextColor="#94A3B8" HorizontalOptions="Center" />
+            <Label Text="Crée ton premier conducteur de concert !" FontSize="13" TextColor="#64748B" HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

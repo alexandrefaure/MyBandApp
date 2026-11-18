@@ -2,11 +2,39 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:MyBandApp.Views"
        x:Class="MyBandApp.AppShell"
-       Title="MyBandApp">
+       Title="MyBandApp"
+       Shell.BackgroundColor="#1A1D24"
+       Shell.TabBarBackgroundColor="#1A1D24"
+       Shell.TabBarForegroundColor="#F59E0B"
+       Shell.TabBarUnselectedColor="#64748B">
 
-    <ShellContent
-        Title="Répertoire"
-        ContentTemplate="{DataTemplate views:SongsPage}"
-        Route="SongsPage" />
+    <TabBar>
+        <!-- Onglet 1 : Accueil -->
+        <Tab Title="Accueil">
+            <Tab.Icon>
+                <FontImageSource Glyph="🏠" Size="22" Color="#F59E0B" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}" 
+                          Route="DashboardPage" />
+        </Tab>
+
+        <!-- Onglet 2 : Répertoire -->
+        <Tab Title="Répertoire">
+            <Tab.Icon>
+                <FontImageSource Glyph="🎵" Size="22" Color="#F59E0B" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:SongsPage}" 
+                          Route="SongsPage" />
+        </Tab>
+
+        <!-- Onglet 3 : Setlists -->
+        <Tab Title="Setlists">
+            <Tab.Icon>
+                <FontImageSource Glyph="📋" Size="22" Color="#F59E0B" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:SetlistsPage}" 
+                          Route="SetlistsPage" />
+        </Tab>
+    </TabBar>
 
 </Shell>

@@ -6,6 +6,7 @@
              x:Class="MyBandApp.Views.SongsPage"
              x:DataType="vm:SongsViewModel"
              BackgroundColor="#0F1115"
+             Shell.NavBarIsVisible="False"
              Title="Répertoire">
 
     <Grid RowDefinitions="Auto, Auto, *" Padding="16" RowSpacing="14">
