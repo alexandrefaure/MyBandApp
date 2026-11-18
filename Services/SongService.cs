@@ -1,4 +1,4 @@
-﻿using MyBandApp.Models;
+﻿using MyBandApp.Models.Entities;
 
 namespace MyBandApp.Services;
 

@@ -1,9 +1,20 @@
-﻿namespace MyBandApp.Views;
+﻿using MyBandApp.ViewModels;
+
+namespace MyBandApp.Views;
 
 public partial class SetlistsPage : ContentPage
 {
-    public SetlistsPage()
+    private readonly SetlistsViewModel _viewModel;
+
+    public SetlistsPage(SetlistsViewModel viewModel)
     {
         InitializeComponent();
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.LoadSetlistsCommand.ExecuteAsync(null);
     }
 }

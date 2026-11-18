@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MyBandApp.Models;
+using MyBandApp.Models.Entities;
 using MyBandApp.Services;
 using System.Collections.ObjectModel;
 

@@ -1,32 +1,84 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyBandApp.ViewModels"
+             xmlns:models="clr-namespace:MyBandApp.Models"
+             xmlns:presentation="clr-namespace:MyBandApp.Models.Presentation"
              x:Class="MyBandApp.Views.SetlistsPage"
+             x:DataType="vm:SetlistsViewModel"
              BackgroundColor="#0F1115"
              Shell.NavBarIsVisible="False"
              Title="Setlists">
 
-    <Grid Padding="20" RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, *" Padding="16" RowSpacing="14">
+
         <!-- En-tête -->
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center" Margin="0,0,0,16">
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center">
             <VerticalStackLayout Spacing="2">
                 <Label Text="Concerts &amp; Répets" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
-                <Label Text="Gère tes listes de morceaux par set" FontSize="13" TextColor="#94A3B8" />
+                <Label Text="{Binding Setlists.Count, StringFormat='{0} setlists enregistrées'}" FontSize="13" TextColor="#94A3B8" />
             </VerticalStackLayout>
+
             <Button Grid.Column="1"
                     Text="+ Setlist"
+                    Command="{Binding AddSetlistCommand}"
                     BackgroundColor="#F59E0B"
                     TextColor="#0F1115"
                     FontAttributes="Bold"
                     CornerRadius="12"
-                    Padding="14,8" />
+                    Padding="16,10" />
         </Grid>
 
-        <!-- Liste vide en attendant l'implémentation complète -->
-        <VerticalStackLayout Grid.Row="1" VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
-            <Label Text="🎸" FontSize="40" HorizontalOptions="Center" />
-            <Label Text="Aucune setlist pour l'instant" FontSize="16" FontAttributes="Bold" TextColor="#94A3B8" HorizontalOptions="Center" />
-            <Label Text="Crée ton premier conducteur de concert !" FontSize="13" TextColor="#64748B" HorizontalOptions="Center" />
-        </VerticalStackLayout>
+        <!-- Liste des Setlists -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding LoadSetlistsCommand}"
+                     RefreshColor="#F59E0B">
+            <CollectionView ItemsSource="{Binding Setlists}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8" Padding="24">
+                        <Label Text="Aucune setlist" FontSize="16" FontAttributes="Bold" TextColor="#94A3B8" HorizontalOptions="Center" />
+                        <Label Text="Crée ton premier conducteur de concert !" FontSize="13" TextColor="#64748B" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="presentation:SetlistWithSongs">
+                        <SwipeView Margin="0,0,0,10">
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Supprimer"
+                                               BackgroundColor="#EF4444"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SetlistsViewModel}}, Path=DeleteSetlistCommand}"
+                                               CommandParameter="{Binding .}" />
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+
+                            <Border BackgroundColor="#1A1D24"
+                                    Stroke="#262B36"
+                                    StrokeThickness="1"
+                                    StrokeShape="RoundRectangle 14"
+                                    Padding="16,14">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SetlistsViewModel}}, Path=EditSetlistCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="*, Auto" VerticalOptions="Center">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                        <Label Text="{Binding Name}" FontSize="17" FontAttributes="Bold" TextColor="#F8FAFC" />
+                                        <Label Text="{Binding FormattedDate}" FontSize="13" TextColor="#F59E0B" />
+                                        <Label Text="{Binding SummarySongsCount}" FontSize="12" TextColor="#94A3B8" />
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Column="1" Text="Éditer ➔" FontSize="13" TextColor="#94A3B8" VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
     </Grid>
 </ContentPage>

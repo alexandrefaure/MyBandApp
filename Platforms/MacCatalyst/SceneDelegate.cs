@@ -1,6 +1,6 @@
 using Foundation;
 
-namespace MyBandApp;
+namespace MyBandApp.Platforms.MacCatalyst;
 
 [Register("SceneDelegate")]
 public class SceneDelegate : MauiUISceneDelegate

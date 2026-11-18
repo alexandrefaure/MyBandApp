@@ -1,7 +1,7 @@
 ﻿using Supabase.Postgrest.Attributes;
 using Supabase.Postgrest.Models;
 
-namespace MyBandApp.Models;
+namespace MyBandApp.Models.Entities;
 
 [Table("songs")]
 public class Song : BaseModel

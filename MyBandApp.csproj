@@ -72,6 +72,9 @@
 	  <Compile Update="Views\DashboardPage.xaml.cs">
 	    <DependentUpon>DashboardPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\SetlistEditPage.xaml.cs">
+	    <DependentUpon>SetlistEditPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\SetlistsPage.xaml.cs">
 	    <DependentUpon>SetlistsPage.xaml</DependentUpon>
 	  </Compile>
@@ -85,6 +88,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Views\DashboardPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SetlistEditPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SetlistsPage.xaml">
