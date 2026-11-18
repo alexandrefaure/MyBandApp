@@ -1,0 +1,28 @@
+name: .NET MAUI CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '11.0.x' # Ajuste selon ta version exacte de .NET
+
+    - name: Install .NET MAUI Workload
+      run: dotnet workload install maui
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build Android App
+      run: dotnet publish MyBandApp.csproj -f net11.0-android -c Release
