@@ -260,49 +260,22 @@ public partial class SetlistEditPage : ContentPage
             return;
 
         var popup = new SongDetailPopup(item.Song, _songService);
+        popup.Disappearing += (_, _) => RefreshSongBindings(item.Song.Id);
         await Navigation.PushModalAsync(popup);
+    }
 
-        await MainThread.InvokeOnMainThreadAsync(() =>
-        {
-            item.NotifySongChanged();
+    private void RefreshSongBindings(int songId)
+    {
+        foreach (var songModel in AllSongs.Where(model => model.Song?.Id == songId))
+            songModel.NotifySongChanged();
 
-            var idxCat = FilteredCatalogueSongs.IndexOf(item);
-            if (idxCat >= 0)
-            {
-                var newCatItem = new SelectableSongModel
-                {
-                    Song = item.Song,
-                    IsSelected = item.IsSelected,
-                    DisplayIndex = item.DisplayIndex
-                };
-                FilteredCatalogueSongs[idxCat] = newCatItem;
-            }
+        foreach (var songModel in FilteredCatalogueSongs.Where(model => model.Song?.Id == songId))
+            songModel.NotifySongChanged();
 
-            var selMatch = SelectedSongs.FirstOrDefault(s => s.Song?.Id == item.Song.Id);
-            if (selMatch is not null)
-            {
-                selMatch.NotifySongChanged();
-                var idxSel = SelectedSongs.IndexOf(selMatch);
-                if (idxSel >= 0)
-                {
-                    SelectedSongs[idxSel] = new SelectableSongModel
-                    {
-                        Song = item.Song,
-                        IsSelected = selMatch.IsSelected,
-                        DisplayIndex = selMatch.DisplayIndex
-                    };
-                }
-            }
+        foreach (var songModel in SelectedSongs.Where(model => model.Song?.Id == songId))
+            songModel.NotifySongChanged();
 
-            var allMatch = AllSongs.FirstOrDefault(s => s.Song?.Id == item.Song.Id);
-            if (allMatch is not null)
-            {
-                allMatch.Song = item.Song;
-                allMatch.NotifySongChanged();
-            }
-
-            RecalculateTotalDuration();
-        });
+        RecalculateTotalDuration();
     }
 
     private async void OnCancelClicked(object sender, EventArgs e)
