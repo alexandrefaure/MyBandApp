@@ -15,7 +15,7 @@
         <!-- En-tête -->
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center">
             <VerticalStackLayout Spacing="2">
-                <Label Text="Concerts &amp; Répets" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
+                <Label Text="Setlists" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
                 <Label Text="{Binding Setlists.Count, StringFormat='{0} setlists enregistrées'}" FontSize="13" TextColor="#94A3B8" />
             </VerticalStackLayout>
 

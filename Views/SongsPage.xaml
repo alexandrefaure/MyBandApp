@@ -15,7 +15,7 @@
         <!-- 1. EN-TÊTE & BOUTON D'AJOUT -->
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto" VerticalOptions="Center">
             <VerticalStackLayout Spacing="2">
-                <Label Text="Répertoire du groupe"
+                <Label Text="Répertoire"
                        FontSize="24"
                        FontAttributes="Bold"
                        TextColor="#F8FAFC" />

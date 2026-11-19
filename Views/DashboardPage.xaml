@@ -11,8 +11,8 @@
 
             <!-- En-tête du groupe -->
             <VerticalStackLayout Spacing="4">
-                <Label Text="Groovin'Soul 🎸" FontSize="26" FontAttributes="Bold" TextColor="#F8FAFC" />
-                <Label Text="Gestion de groupe &amp; conducteur de scène" FontSize="14" TextColor="#94A3B8" />
+                <Label Text="MyBand 🎸" FontSize="26" FontAttributes="Bold" TextColor="#F8FAFC" />
+                <Label Text="Gestion de groupe &amp; assistant" FontSize="14" TextColor="#94A3B8" />
             </VerticalStackLayout>
 
             <!-- Cartes d'accès rapide -->

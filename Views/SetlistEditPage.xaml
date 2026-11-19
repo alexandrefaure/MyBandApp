@@ -22,7 +22,7 @@
         <!-- 2. Boutons d'onglets -->
         <Grid Grid.Row="1" ColumnDefinitions="*, *" ColumnSpacing="8">
             <Button x:Name="Tab1Button" Grid.Column="0" Text="Morceaux du Set" Clicked="OnTab1Clicked" BackgroundColor="#F59E0B" TextColor="#0F1115" FontAttributes="Bold" CornerRadius="10" />
-            <Button x:Name="Tab2Button" Grid.Column="1" Text="Catalogue &amp; Recherche" Clicked="OnTab2Clicked" BackgroundColor="#1A1D24" TextColor="#94A3B8" FontAttributes="Bold" CornerRadius="10" />
+            <Button x:Name="Tab2Button" Grid.Column="1" Text="Répertoire" Clicked="OnTab2Clicked" BackgroundColor="#1A1D24" TextColor="#94A3B8" FontAttributes="Bold" CornerRadius="10" />
         </Grid>
 
         <!-- 3. Contenu dynamique -->
