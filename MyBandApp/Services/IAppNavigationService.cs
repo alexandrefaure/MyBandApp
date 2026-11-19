@@ -49,7 +49,9 @@ public class MauiNavigationService : IAppNavigationService
         onDisappearing = (_, _) =>
         {
             if (Shell.Current.Navigation.ModalStack.Contains(page))
+            {
                 return;
+            }
 
             page.Disappearing -= onDisappearing;
             dismissed.TrySetResult();

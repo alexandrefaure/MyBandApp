@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyBandApp.LoadingPage"
+             BackgroundColor="#0F1115">
+
+    <Grid RowDefinitions="*, Auto, *" Padding="32">
+        <VerticalStackLayout Grid.Row="1" Spacing="18" HorizontalOptions="Center" VerticalOptions="Center">
+            <ActivityIndicator IsRunning="True"
+                               Color="#F59E0B"
+                               WidthRequest="48"
+                               HeightRequest="48" />
+
+            <Label Text="Chargement de ton répertoire..."
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="#F8FAFC"
+                   HorizontalOptions="Center" />
+
+            <Label Text="Préparation des morceaux et setlists"
+                   FontSize="13"
+                   TextColor="#94A3B8"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </Grid>
+
+</ContentPage>

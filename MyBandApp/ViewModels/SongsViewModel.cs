@@ -15,6 +15,7 @@ public partial class SongsViewModel : ReactiveObject
     private readonly IAppNavigationService _navigation;
     private List<SongListItem> _allSongs = new();
     private string _searchText = string.Empty;
+    private bool _hasLoadedOnce;
 
     public ObservableCollection<SongListItem> FilteredSongs { get; } = new();
     public ICommand LoadSongsCommand { get; }
@@ -39,7 +40,7 @@ public partial class SongsViewModel : ReactiveObject
         _songService = songService;
         _dialogs = dialogs;
         _navigation = navigation;
-        LoadSongsCommand = ReactiveCommand.CreateFromTask(LoadSongsAsync);
+        LoadSongsCommand = ReactiveCommand.CreateFromTask(() => LoadSongsAsync());
         ToggleAddFormCommand = ReactiveCommand.Create(ToggleAddForm);
         AddSongCommand = ReactiveCommand.CreateFromTask(AddSongAsync);
         DeleteSongCommand = ReactiveCommand.CreateFromTask<SongListItem>(DeleteSongAsync);
@@ -69,17 +70,29 @@ public partial class SongsViewModel : ReactiveObject
                 song.Key.Contains(query, StringComparison.OrdinalIgnoreCase));
 
         foreach (var song in matches)
+        {
             FilteredSongs.Add(song);
+        }
     }
 
-    public async Task LoadSongsAsync()
+    public async Task LoadSongsAsync(bool forceRefresh = false)
     {
-        if (IsBusy) return;
+        if (IsBusy)
+        {
+            return;
+        }
+
+        if (!forceRefresh && _hasLoadedOnce)
+        {
+            return;
+        }
 
         try
         {
             IsBusy = true;
-            _allSongs = (await _songService.GetSongsAsync()).Select(song => new SongListItem(song)).ToList();
+            var songs = await _songService.GetSongsAsync(forceRefresh);
+            _allSongs = songs.Select(song => new SongListItem(song)).ToList();
+            _hasLoadedOnce = true;
             ApplyFilter();
         }
         catch (Exception ex)
@@ -146,7 +159,10 @@ public partial class SongsViewModel : ReactiveObject
             $"Retirer « {songItem.Title} » du répertoire ?",
             "Oui",
             "Non");
-        if (!confirm) return;
+        if (!confirm)
+        {
+            return;
+        }
 
         try
         {

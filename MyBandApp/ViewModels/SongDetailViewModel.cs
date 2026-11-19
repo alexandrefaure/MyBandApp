@@ -47,7 +47,10 @@ public partial class SongDetailViewModel : ReactiveObject
 
         var keys = MusicalKeys.All.ToList();
         if (!string.IsNullOrWhiteSpace(song.Key) && !keys.Contains(song.Key))
+        {
             keys.Insert(0, song.Key);
+        }
+
         AvailableKeys = keys;
         this.RaisePropertyChanged(nameof(AvailableKeys));
 
@@ -120,7 +123,9 @@ public partial class SongDetailViewModel : ReactiveObject
     private static string FormatDurationForEdit(int seconds)
     {
         if (seconds <= 0)
+        {
             return string.Empty;
+        }
 
         var duration = TimeSpan.FromSeconds(seconds);
         return $"{(int)duration.TotalMinutes:00}:{duration.Seconds:00}";
@@ -133,7 +138,9 @@ public partial class SongDetailViewModel : ReactiveObject
 
         var value = input?.Trim() ?? string.Empty;
         if (value.Length == 0)
+        {
             return true;
+        }
 
         if (value.Contains(':'))
         {
@@ -141,7 +148,9 @@ public partial class SongDetailViewModel : ReactiveObject
             if (parts.Length != 2 ||
                 !int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var minutes) ||
                 !int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
+            {
                 return false;
+            }
 
             if (minutes < 0 || seconds < 0 || seconds >= 60)
             {
@@ -154,7 +163,9 @@ public partial class SongDetailViewModel : ReactiveObject
         }
 
         if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out totalSeconds) && totalSeconds >= 0)
+        {
             return true;
+        }
 
         errorMessage = "Entre une durée au format mm:ss (ex. 03:45) ou en secondes.";
         return false;

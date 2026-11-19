@@ -12,7 +12,9 @@ public static class DependencyInjectionExtensions
         {
             // On s'assure que c'est une classe concrète qui appartient au namespace du projet
             if (!type.IsClass || type.IsAbstract || type.Namespace == null || !type.Namespace.StartsWith("MyBandApp"))
+            {
                 continue;
+            }
 
             string name = type.Name;
 

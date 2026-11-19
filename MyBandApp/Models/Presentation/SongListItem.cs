@@ -15,7 +15,9 @@ public class SongListItem : ReactiveObject
         get
         {
             if (Song.DurationSeconds <= 0)
+            {
                 return "--:--";
+            }
 
             var duration = TimeSpan.FromSeconds(Song.DurationSeconds);
             return duration.TotalHours >= 1

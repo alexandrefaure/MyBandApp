@@ -12,6 +12,7 @@ public partial class SetlistsViewModel : ReactiveObject
     private readonly SetlistService _setlistService;
     private readonly IUserDialogService _dialogs;
     private readonly IAppNavigationService _navigation;
+    private bool _hasLoadedOnce;
 
     public ObservableCollection<SetlistWithSongs> Setlists { get; } = new();
     public ICommand LoadSetlistsCommand { get; }
@@ -29,23 +30,34 @@ public partial class SetlistsViewModel : ReactiveObject
         _setlistService = setlistService;
         _dialogs = dialogs;
         _navigation = navigation;
-        LoadSetlistsCommand = ReactiveCommand.CreateFromTask(LoadSetlistsAsync);
+        LoadSetlistsCommand = ReactiveCommand.CreateFromTask(() => LoadSetlistsAsync());
         AddSetlistCommand = ReactiveCommand.CreateFromTask(() => OpenSetlistEditorAsync(null));
         EditSetlistCommand = ReactiveCommand.CreateFromTask<SetlistWithSongs>(OpenSetlistEditorAsync);
         DeleteSetlistCommand = ReactiveCommand.CreateFromTask<SetlistWithSongs>(DeleteSetlistAsync);
     }
 
-    public async Task LoadSetlistsAsync()
+    public async Task LoadSetlistsAsync(bool forceRefresh = false)
     {
-        if (IsBusy) return;
+        if (IsBusy)
+        {
+            return;
+        }
+
+        if (!forceRefresh && _hasLoadedOnce)
+        {
+            return;
+        }
 
         try
         {
             IsBusy = true;
-            var list = await _setlistService.GetSetlistsWithSongsAsync();
+            var list = await _setlistService.GetSetlistsWithSongsAsync(forceRefresh);
+            _hasLoadedOnce = true;
             Setlists.Clear();
             foreach (var setlist in list)
+            {
                 Setlists.Add(setlist);
+            }
         }
         catch (Exception ex)
         {
@@ -62,7 +74,7 @@ public partial class SetlistsViewModel : ReactiveObject
         try
         {
             await _navigation.OpenSetlistEditorAsync(setlist);
-            await LoadSetlistsAsync();
+            await LoadSetlistsAsync(forceRefresh: true);
         }
         catch (Exception ex)
         {
@@ -77,7 +89,10 @@ public partial class SetlistsViewModel : ReactiveObject
             $"Supprimer la setlist « {setlistWithSongs.Name} » ?",
             "Oui",
             "Non");
-        if (!confirm) return;
+        if (!confirm)
+        {
+            return;
+        }
 
         try
         {

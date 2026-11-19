@@ -88,9 +88,14 @@ public partial class SetlistEditViewModel : ReactiveObject
             AllSongs.Clear();
             SelectedSongs.Clear();
             foreach (var song in songsInSetOrder)
+            {
                 AddSongModel(song, isSelected: true);
+            }
+
             foreach (var song in unselectedSongs)
+            {
                 AddSongModel(song, isSelected: false);
+            }
 
             FilterCatalogue();
             RecalculateTotalDuration();
@@ -108,7 +113,9 @@ public partial class SetlistEditViewModel : ReactiveObject
         AllSongs.Add(model);
 
         if (isSelected)
+        {
             SelectedSongs.Add(model);
+        }
 
         UpdateDisplayIndices();
     }
@@ -116,12 +123,18 @@ public partial class SetlistEditViewModel : ReactiveObject
     private void OnSongModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(SelectableSongModel.IsSelected) || sender is not SelectableSongModel model)
+        {
             return;
+        }
 
         if (model.IsSelected && !SelectedSongs.Contains(model))
+        {
             SelectedSongs.Add(model);
+        }
         else if (!model.IsSelected)
+        {
             SelectedSongs.Remove(model);
+        }
 
         UpdateDisplayIndices();
         RecalculateTotalDuration();
@@ -130,7 +143,9 @@ public partial class SetlistEditViewModel : ReactiveObject
     private void UpdateDisplayIndices()
     {
         for (int i = 0; i < SelectedSongs.Count; i++)
+        {
             SelectedSongs[i].DisplayIndex = i + 1;
+        }
     }
 
     private void FilterCatalogue()
@@ -144,7 +159,9 @@ public partial class SetlistEditViewModel : ReactiveObject
 
         FilteredCatalogueSongs.Clear();
         foreach (var model in filtered)
+        {
             FilteredCatalogueSongs.Add(model);
+        }
     }
 
     private void RecalculateTotalDuration()
@@ -236,12 +253,16 @@ public partial class SetlistEditViewModel : ReactiveObject
         _draggedSong = null;
 
         if (draggedSong is null || targetSong is null || draggedSong == targetSong)
+        {
             return;
+        }
 
         var oldIndex = SelectedSongs.IndexOf(draggedSong);
         var newIndex = SelectedSongs.IndexOf(targetSong);
         if (oldIndex < 0 || newIndex < 0)
+        {
             return;
+        }
 
         SelectedSongs.Move(oldIndex, newIndex);
         UpdateDisplayIndices();
