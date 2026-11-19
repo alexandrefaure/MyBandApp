@@ -71,11 +71,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Remove="MyBandApp.Tests\**\*.cs" />
+	  <MauiXaml Remove="MyBandApp.Tests\**\*.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Views\SetlistsPage.xaml.cs">
-	    <DependentUpon>SetlistsPage.xaml</DependentUpon>
+		<DependentUpon>SetlistsPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\SongsPage.xaml.cs">
-	    <DependentUpon>SongsPage.xaml</DependentUpon>
+		<DependentUpon>SongsPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 

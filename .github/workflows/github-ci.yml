@@ -16,13 +16,38 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '11.0.x' # Ajuste selon ta version exacte de .NET
+        dotnet-version: '11.0.x'
 
     - name: Install .NET MAUI Workload
       run: dotnet workload install maui
 
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: Restore solution
+      run: dotnet restore MyBandApp.slnx
 
     - name: Build Android App
-      run: dotnet publish MyBandApp.csproj -f net11.0-android -c Release
+      run: dotnet publish MyBandApp/MyBandApp.csproj -f net11.0-android -c Release
+
+  test:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '11.0.x'
+
+    - name: Restore test project
+      run: dotnet restore MyBandApp.Tests/MyBandApp.Tests.csproj
+
+    - name: Run unit tests
+      run: dotnet test MyBandApp.Tests/MyBandApp.Tests.csproj --configuration Release --no-restore --logger "trx;LogFileName=test-results.trx"
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: '**/*.trx'

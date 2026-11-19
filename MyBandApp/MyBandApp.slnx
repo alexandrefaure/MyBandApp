@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="MyBandApp.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+  <Project Path="..\MyBandApp.Tests\MyBandApp.Tests.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
+</Solution>
