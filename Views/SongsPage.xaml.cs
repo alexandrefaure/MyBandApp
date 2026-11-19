@@ -15,6 +15,6 @@ public partial class SongsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadSongsCommand.ExecuteAsync(null);
+        await _viewModel.LoadSongsAsync();
     }
 }

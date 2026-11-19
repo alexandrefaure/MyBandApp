@@ -15,6 +15,6 @@ public partial class SetlistsPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadSetlistsCommand.ExecuteAsync(null);
+        await _viewModel.LoadSetlistsAsync();
     }
 }

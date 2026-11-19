@@ -1,10 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyBandApp.ViewModels"
              xmlns:models="clr-namespace:MyBandApp.Models.Presentation"
              x:Class="MyBandApp.Views.SetlistEditPage"
+             x:DataType="vm:SetlistEditViewModel"
              BackgroundColor="#0F1115"
              Title="Configuration de la Setlist">
+
+    <ContentPage.Resources>
+        <Style x:Key="SelectedSongsTabButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#1A1D24" />
+            <Setter Property="TextColor" Value="#94A3B8" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelectedSongsTab}" TargetType="Button" Value="True">
+                    <Setter Property="BackgroundColor" Value="#F59E0B" />
+                    <Setter Property="TextColor" Value="#0F1115" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="CatalogueTabButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#1A1D24" />
+            <Setter Property="TextColor" Value="#94A3B8" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCatalogueTab}" TargetType="Button" Value="True">
+                    <Setter Property="BackgroundColor" Value="#F59E0B" />
+                    <Setter Property="TextColor" Value="#0F1115" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, Auto, *, Auto, Auto" Padding="16" RowSpacing="12">
 
@@ -21,15 +50,15 @@
 
         <!-- 2. Boutons d'onglets -->
         <Grid Grid.Row="1" ColumnDefinitions="*, *" ColumnSpacing="8">
-            <Button x:Name="Tab1Button" Grid.Column="0" Text="Morceaux du Set" Clicked="OnTab1Clicked" BackgroundColor="#F59E0B" TextColor="#0F1115" FontAttributes="Bold" CornerRadius="10" />
-            <Button x:Name="Tab2Button" Grid.Column="1" Text="Répertoire" Clicked="OnTab2Clicked" BackgroundColor="#1A1D24" TextColor="#94A3B8" FontAttributes="Bold" CornerRadius="10" />
+            <Button Grid.Column="0" Text="Morceaux du Set" Command="{Binding ShowSelectedSongsTabCommand}" Style="{StaticResource SelectedSongsTabButton}" />
+            <Button Grid.Column="1" Text="Répertoire" Command="{Binding ShowCatalogueTabCommand}" Style="{StaticResource CatalogueTabButton}" />
         </Grid>
 
         <!-- 3. Contenu dynamique -->
         <Grid Grid.Row="2">
 
             <!-- VUE 1 : Morceaux sélectionnés avec vrai Glisser-Déposer -->
-            <VerticalStackLayout x:Name="View1Layout" Spacing="10" IsVisible="True">
+            <VerticalStackLayout Spacing="10" IsVisible="{Binding IsSelectedSongsTab}">
                 <Label Text="Conduite du concert (Maintiens un élément et glisse-le sur un autre pour l'échanger) :" FontSize="12" FontAttributes="Bold" TextColor="#F59E0B" />
                 <CollectionView ItemsSource="{Binding SelectedSongs}" SelectionMode="None">
                     <CollectionView.EmptyView>
@@ -67,7 +96,7 @@
                                     <!-- Bouton Modifier le morceau -->
                                     <Button Grid.Column="2"
                                             Text="✎"
-                                            Clicked="OnEditSongClicked"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SetlistEditViewModel}}, Path=EditSongCommand}"
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="#262B36"
                                             TextColor="#F8FAFC"
@@ -80,7 +109,7 @@
                                     <!-- Bouton Supprimer du set -->
                                     <Button Grid.Column="3"
                                             Text="✕"
-                                            Clicked="OnRemoveSongClicked"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SetlistEditViewModel}}, Path=RemoveSongCommand}"
                                             CommandParameter="{Binding .}"
                                             BackgroundColor="#EF4444"
                                             TextColor="White"
@@ -97,9 +126,9 @@
             </VerticalStackLayout>
 
             <!-- VUE 2 : Catalogue et recherche corrigée -->
-            <VerticalStackLayout x:Name="View2Layout" Spacing="10" IsVisible="False">
+            <VerticalStackLayout Spacing="10" IsVisible="{Binding IsCatalogueTab}">
                 <SearchBar Placeholder="Rechercher un morceau, un artiste..."
-               TextChanged="OnSearchTextChanged"
+                Text="{Binding SearchText}"
                BackgroundColor="#1A1D24"
                TextColor="White"
                PlaceholderColor="#64748B" />
@@ -109,13 +138,13 @@
                         <DataTemplate x:DataType="models:SelectableSongModel">
                             <Border BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12" Margin="0,0,0,8">
                                 <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnSongCardTapped" CommandParameter="{Binding .}" />
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SetlistEditViewModel}}, Path=ToggleSongSelectionCommand}" CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
                                 <Grid ColumnDefinitions="Auto, *, Auto, Auto" VerticalOptions="Center" ColumnSpacing="10">
                                     <CheckBox Grid.Column="0"
                                   IsChecked="{Binding IsSelected}"
+                                  InputTransparent="True"
                                   Color="#F59E0B"
-                                  CheckedChanged="OnCheckBoxChanged"
                                   VerticalOptions="Center" />
 
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
@@ -134,7 +163,7 @@
                                     <!-- Bouton Modifier le morceau -->
                                     <Button Grid.Column="3"
                                 Text="✎"
-                                Clicked="OnEditSongClicked"
+                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SetlistEditViewModel}}, Path=EditSongCommand}"
                                 CommandParameter="{Binding .}"
                                 BackgroundColor="#262B36"
                                 TextColor="#F8FAFC"
@@ -175,8 +204,8 @@
 
         <!-- 5. Boutons d'action -->
         <HorizontalStackLayout Grid.Row="4" Spacing="12" HorizontalOptions="Center" Margin="0,10,0,0">
-            <Button Text="Enregistrer" Clicked="OnSaveClicked" BackgroundColor="#10B981" TextColor="White" FontAttributes="Bold" CornerRadius="10" WidthRequest="150" />
-            <Button Text="Annuler" Clicked="OnCancelClicked" BackgroundColor="#334155" TextColor="White" CornerRadius="10" WidthRequest="120" />
+            <Button Text="Enregistrer" Command="{Binding SaveCommand}" BackgroundColor="#10B981" TextColor="White" FontAttributes="Bold" CornerRadius="10" WidthRequest="150" />
+            <Button Text="Annuler" Command="{Binding CancelCommand}" BackgroundColor="#334155" TextColor="White" CornerRadius="10" WidthRequest="120" />
         </HorizontalStackLayout>
 
     </Grid>

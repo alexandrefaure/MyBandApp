@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyBandApp.ViewModels"
              x:Class="MyBandApp.Views.SongDetailPopup"
+             x:DataType="vm:SongDetailViewModel"
              BackgroundColor="#0F1115"
              Title="Détails du morceau">
 
@@ -10,8 +12,8 @@
 
             <!-- Titre et Artiste -->
             <VerticalStackLayout Spacing="4">
-                <Label Text="{Binding CurrentSong.Title}" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
-                <Label Text="{Binding CurrentSong.Artist}" FontSize="16" TextColor="#94A3B8" />
+                <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" TextColor="#F8FAFC" />
+                <Label Text="{Binding Artist}" FontSize="16" TextColor="#94A3B8" />
             </VerticalStackLayout>
 
             <!-- Infos techniques (Tonalité, BPM, Durée) -->
@@ -20,7 +22,7 @@
                     <VerticalStackLayout Spacing="2">
                         <Label Text="Tonalité" FontSize="11" TextColor="#94A3B8" />
                         <Picker ItemsSource="{Binding AvailableKeys}"
-                                SelectedItem="{Binding State.SelectedKey, Mode=TwoWay}"
+                                SelectedItem="{Binding SelectedKey, Mode=TwoWay}"
                                 Title="Choisir"
                                 TitleColor="#64748B"
                                 TextColor="#C4B5FD"
@@ -33,7 +35,7 @@
                 <Border Grid.Column="1" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
                     <VerticalStackLayout Spacing="2">
                         <Label Text="BPM" FontSize="11" TextColor="#94A3B8" />
-                        <Entry Text="{Binding State.EditableBpm, Mode=TwoWay}"
+                        <Entry Text="{Binding EditableBpm, Mode=TwoWay}"
                                Keyboard="Numeric"
                                Placeholder="120"
                                PlaceholderColor="#64748B"
@@ -47,7 +49,7 @@
                 <Border Grid.Column="2" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
                     <VerticalStackLayout Spacing="2">
                         <Label Text="Durée" FontSize="11" TextColor="#94A3B8" />
-                        <Entry Text="{Binding State.EditableDuration, Mode=TwoWay}"
+                        <Entry Text="{Binding EditableDuration, Mode=TwoWay}"
                                Placeholder="03:45"
                                PlaceholderColor="#64748B"
                                TextColor="#CBD5E1"
@@ -64,7 +66,7 @@
                 <Label Text="Liens YouTube (tutos, covers, lives...)" FontSize="16" FontAttributes="Bold" TextColor="#F59E0B" />
 
                 <Editor Placeholder="Colle tes liens YouTube ici (un par ligne ou séparés par des virgules)..."
-                        Text="{Binding State.EditableYoutubeLinks, Mode=TwoWay}"
+                        Text="{Binding EditableYoutubeLinks, Mode=TwoWay}"
                         BackgroundColor="#1A1D24"
                         TextColor="White"
                         PlaceholderColor="#64748B"
@@ -75,7 +77,7 @@
             <!-- Boutons d'action -->
             <HorizontalStackLayout Spacing="12" HorizontalOptions="Center" Margin="0,20,0,0">
                 <Button Text="Enregistrer"
-                        Clicked="OnSaveClicked"
+                        Command="{Binding SaveCommand}"
                         BackgroundColor="#10B981"
                         TextColor="White"
                         FontAttributes="Bold"
@@ -83,7 +85,7 @@
                         WidthRequest="150" />
 
                 <Button Text="Fermer"
-                        Clicked="OnCloseClicked"
+                        Command="{Binding CloseCommand}"
                         BackgroundColor="#334155"
                         TextColor="White"
                         CornerRadius="10"

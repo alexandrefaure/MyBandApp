@@ -1,8 +1,9 @@
 ﻿using MyBandApp.Models.Entities;
+using ReactiveUI;
 
 namespace MyBandApp.Models.Presentation;
 
-public class SelectableSongModel : BindableObject
+public class SelectableSongModel : ReactiveObject
 {
     private Song _song = new();
     public Song Song
@@ -10,11 +11,9 @@ public class SelectableSongModel : BindableObject
         get => _song;
         set
         {
-            if (_song == value) return;
-            _song = value;
+            this.RaiseAndSetIfChanged(ref _song, value);
             RefreshDuration();
-            OnPropertyChanged();
-            NotifySongChanged();
+            RaiseSongPropertiesChanged();
         }
     }
 
@@ -26,40 +25,21 @@ public class SelectableSongModel : BindableObject
     public bool IsSelected
     {
         get => _isSelected;
-        set
-        {
-            if (_isSelected != value)
-            {
-                _isSelected = value;
-                OnPropertyChanged();
-            }
-        }
+        set => this.RaiseAndSetIfChanged(ref _isSelected, value);
     }
 
     private int _displayIndex;
     public int DisplayIndex
     {
         get => _displayIndex;
-        set
-        {
-            if (_displayIndex != value)
-            {
-                _displayIndex = value;
-                OnPropertyChanged();
-            }
-        }
+        set => this.RaiseAndSetIfChanged(ref _displayIndex, value);
     }
 
     private string _formattedDuration = "--:--";
     public string FormattedDuration
     {
         get => _formattedDuration;
-        private set
-        {
-            if (_formattedDuration == value) return;
-            _formattedDuration = value;
-            OnPropertyChanged();
-        }
+        private set => this.RaiseAndSetIfChanged(ref _formattedDuration, value);
     }
 
     public void RefreshDuration()
@@ -80,10 +60,15 @@ public class SelectableSongModel : BindableObject
     public void NotifySongChanged()
     {
         RefreshDuration();
-        OnPropertyChanged(nameof(Song));
-        OnPropertyChanged(nameof(Title));
-        OnPropertyChanged(nameof(Artist));
-        OnPropertyChanged(nameof(Key));
-        OnPropertyChanged(nameof(FormattedDuration));
+        RaiseSongPropertiesChanged();
+    }
+
+    private void RaiseSongPropertiesChanged()
+    {
+        this.RaisePropertyChanged(nameof(Song));
+        this.RaisePropertyChanged(nameof(Title));
+        this.RaisePropertyChanged(nameof(Artist));
+        this.RaisePropertyChanged(nameof(Key));
+        this.RaisePropertyChanged(nameof(FormattedDuration));
     }
 }

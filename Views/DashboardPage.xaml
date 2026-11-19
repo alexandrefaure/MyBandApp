@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyBandApp.ViewModels"
              x:Class="MyBandApp.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
              BackgroundColor="#0F1115"
              Shell.NavBarIsVisible="False"
              Title="Accueil">
@@ -20,7 +22,7 @@
                 <!-- Carte Répertoire -->
                 <Border Grid.Column="0" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 14" Padding="16">
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnGoToSongsClicked" />
+                        <TapGestureRecognizer Command="{Binding GoToSongsCommand}" />
                     </Border.GestureRecognizers>
                     <VerticalStackLayout Spacing="8">
                         <Label Text="🎵" FontSize="22" />
@@ -32,7 +34,7 @@
                 <!-- Carte Setlists -->
                 <Border Grid.Column="1" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 14" Padding="16">
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnGoToSetlistsClicked" />
+                        <TapGestureRecognizer Command="{Binding GoToSetlistsCommand}" />
                     </Border.GestureRecognizers>
                     <VerticalStackLayout Spacing="8">
                         <Label Text="📋" FontSize="22" />

@@ -1,4 +1,6 @@
 using MyBandApp.Extensions;
+using MyBandApp.Services;
+using ReactiveUI.Builder;
 
 namespace MyBandApp;
 
@@ -10,6 +12,7 @@ public static class MauiProgram
 
         builder
             .UseMauiApp<App>()
+            .UseReactiveUI(reactiveUi => reactiveUi.WithMaui())
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -29,6 +32,10 @@ public static class MauiProgram
 
         // 2. Enregistrement automatique de tous les Services, ViewModels et Pages
         builder.Services.RegisterAppByConvention();
+        builder.Services.AddSingleton<IUserDialogService>(provider =>
+            provider.GetRequiredService<MauiUserDialogService>());
+        builder.Services.AddSingleton<IAppNavigationService>(provider =>
+            provider.GetRequiredService<MauiNavigationService>());
 
         return builder.Build();
     }

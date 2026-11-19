@@ -26,7 +26,7 @@ public static class DependencyInjectionExtensions
                 // Les ViewModels en Transient
                 services.AddTransient(type);
             }
-            else if (name.EndsWith("Page"))
+            else if (name.EndsWith("Page") || name.EndsWith("Popup"))
             {
                 // Les Vues / Pages / Popups en Transient
                 services.AddTransient(type);

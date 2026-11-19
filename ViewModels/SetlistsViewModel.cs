@@ -1,40 +1,55 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using MyBandApp.Models.Presentation;
 using MyBandApp.Services;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace MyBandApp.ViewModels;
 
-public partial class SetlistsViewModel : ObservableObject
+public partial class SetlistsViewModel : ReactiveObject
 {
     private readonly SetlistService _setlistService;
-    private readonly SongService _songService;
+    private readonly IUserDialogService _dialogs;
+    private readonly IAppNavigationService _navigation;
 
     public ObservableCollection<SetlistWithSongs> Setlists { get; } = new();
+    public ICommand LoadSetlistsCommand { get; }
+    public ICommand AddSetlistCommand { get; }
+    public ICommand EditSetlistCommand { get; }
+    public ICommand DeleteSetlistCommand { get; }
 
-    [ObservableProperty] private bool isBusy;
+    [Reactive] public partial bool IsBusy { get; set; }
 
-    public SetlistsViewModel(SetlistService setlistService, SongService songService)
+    public SetlistsViewModel(
+        SetlistService setlistService,
+        IUserDialogService dialogs,
+        IAppNavigationService navigation)
     {
         _setlistService = setlistService;
-        _songService = songService;
+        _dialogs = dialogs;
+        _navigation = navigation;
+        LoadSetlistsCommand = ReactiveCommand.CreateFromTask(LoadSetlistsAsync);
+        AddSetlistCommand = ReactiveCommand.CreateFromTask(() => OpenSetlistEditorAsync(null));
+        EditSetlistCommand = ReactiveCommand.CreateFromTask<SetlistWithSongs>(OpenSetlistEditorAsync);
+        DeleteSetlistCommand = ReactiveCommand.CreateFromTask<SetlistWithSongs>(DeleteSetlistAsync);
     }
 
-    [RelayCommand]
     public async Task LoadSetlistsAsync()
     {
         if (IsBusy) return;
+
         try
         {
             IsBusy = true;
             var list = await _setlistService.GetSetlistsWithSongsAsync();
             Setlists.Clear();
-            foreach (var s in list) Setlists.Add(s);
+            foreach (var setlist in list)
+                Setlists.Add(setlist);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Erreur", ex.Message, "OK");
+            await _dialogs.ShowAlertAsync("Erreur", ex.Message);
         }
         finally
         {
@@ -42,30 +57,26 @@ public partial class SetlistsViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private async Task AddSetlistAsync()
+    private async Task OpenSetlistEditorAsync(SetlistWithSongs? setlist)
     {
-        var allSongs = await _songService.GetSongsAsync();
-        // On passe null pour la création
-        var editPage = new MyBandApp.Views.SetlistEditPage(null, allSongs, _setlistService, _songService);
-        await Shell.Current.Navigation.PushModalAsync(editPage);
+        try
+        {
+            await _navigation.OpenSetlistEditorAsync(setlist);
+            await LoadSetlistsAsync();
+        }
+        catch (Exception ex)
+        {
+            await _dialogs.ShowAlertAsync("Erreur", ex.Message);
+        }
     }
 
-    [RelayCommand]
-    private async Task EditSetlistAsync(SetlistWithSongs setlistWithSongs)
-    {
-        if (setlistWithSongs == null) return;
-        var allSongs = await _songService.GetSongsAsync();
-        // On passe l'objet SetlistWithSongs complet
-        var editPage = new MyBandApp.Views.SetlistEditPage(setlistWithSongs, allSongs, _setlistService, _songService);
-        await Shell.Current.Navigation.PushModalAsync(editPage);
-    }
-
-    [RelayCommand]
     private async Task DeleteSetlistAsync(SetlistWithSongs setlistWithSongs)
     {
-        if (setlistWithSongs == null) return;
-        bool confirm = await Shell.Current.DisplayAlert("Supprimer", $"Supprimer la setlist « {setlistWithSongs.Name} » ?", "Oui", "Non");
+        bool confirm = await _dialogs.ConfirmAsync(
+            "Supprimer",
+            $"Supprimer la setlist « {setlistWithSongs.Name} » ?",
+            "Oui",
+            "Non");
         if (!confirm) return;
 
         try
@@ -75,7 +86,7 @@ public partial class SetlistsViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Erreur", ex.Message, "OK");
+            await _dialogs.ShowAlertAsync("Erreur", ex.Message);
         }
     }
 }
