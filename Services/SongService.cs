@@ -47,6 +47,9 @@ public class SongService
         await _supabase
             .From<Song>()
             .Where(s => s.Id == song.Id)
+            .Set(s => s.Key, song.Key)
+            .Set(s => s.Bpm, song.Bpm)
+            .Set(s => s.DurationSeconds, song.DurationSeconds) // adapte selon le nom/type exact sur Song
             .Set(s => s.YoutubeLinks, song.YoutubeLinks)
             .Update();
     }

@@ -17,21 +17,44 @@
             <!-- Infos techniques (Tonalité, BPM, Durée) -->
             <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
                 <Border Grid.Column="0" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
-                    <VerticalStackLayout>
+                    <VerticalStackLayout Spacing="2">
                         <Label Text="Tonalité" FontSize="11" TextColor="#94A3B8" />
-                        <Label Text="{Binding CurrentSong.Key}" FontSize="16" FontAttributes="Bold" TextColor="#C4B5FD" />
+                        <Picker ItemsSource="{Binding AvailableKeys}"
+                                SelectedItem="{Binding State.SelectedKey, Mode=TwoWay}"
+                                Title="Choisir"
+                                TitleColor="#64748B"
+                                TextColor="#C4B5FD"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                BackgroundColor="Transparent"
+                                Margin="0,-6,0,-6" />
                     </VerticalStackLayout>
                 </Border>
                 <Border Grid.Column="1" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
-                    <VerticalStackLayout>
+                    <VerticalStackLayout Spacing="2">
                         <Label Text="BPM" FontSize="11" TextColor="#94A3B8" />
-                        <Label Text="{Binding CurrentSong.Bpm}" FontSize="16" FontAttributes="Bold" TextColor="#FCD34D" />
+                        <Entry Text="{Binding State.EditableBpm, Mode=TwoWay}"
+                               Keyboard="Numeric"
+                               Placeholder="120"
+                               PlaceholderColor="#64748B"
+                               TextColor="#FCD34D"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               BackgroundColor="Transparent"
+                               Margin="0,-8,0,-8" />
                     </VerticalStackLayout>
                 </Border>
                 <Border Grid.Column="2" BackgroundColor="#1A1D24" Stroke="#262B36" StrokeShape="RoundRectangle 10" Padding="12">
-                    <VerticalStackLayout>
+                    <VerticalStackLayout Spacing="2">
                         <Label Text="Durée" FontSize="11" TextColor="#94A3B8" />
-                        <Label Text="{Binding CurrentSong.FormattedDuration}" FontSize="16" FontAttributes="Bold" TextColor="#CBD5E1" />
+                        <Entry Text="{Binding State.EditableDuration, Mode=TwoWay}"
+                               Placeholder="03:45"
+                               PlaceholderColor="#64748B"
+                               TextColor="#CBD5E1"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               BackgroundColor="Transparent"
+                               Margin="0,-8,0,-8" />
                     </VerticalStackLayout>
                 </Border>
             </Grid>
@@ -41,7 +64,7 @@
                 <Label Text="Liens YouTube (tutos, covers, lives...)" FontSize="16" FontAttributes="Bold" TextColor="#F59E0B" />
 
                 <Editor Placeholder="Colle tes liens YouTube ici (un par ligne ou séparés par des virgules)..."
-                        Text="{Binding EditableYoutubeLinks}"
+                        Text="{Binding State.EditableYoutubeLinks, Mode=TwoWay}"
                         BackgroundColor="#1A1D24"
                         TextColor="White"
                         PlaceholderColor="#64748B"
