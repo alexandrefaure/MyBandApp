@@ -48,19 +48,47 @@
                                     <DropGestureRecognizer AllowDrop="True" Drop="OnDrop" />
                                 </Border.GestureRecognizers>
 
-                                <Grid ColumnDefinitions="Auto, *, Auto, Auto" VerticalOptions="Center" ColumnSpacing="12">
+                                <Grid ColumnDefinitions="Auto, *, Auto, Auto" VerticalOptions="Center" ColumnSpacing="8">
                                     <!-- Numéro d'ordre -->
-                                    <Label Grid.Column="0" Text="{Binding DisplayIndex, StringFormat='{0}.'}" FontSize="15" FontAttributes="Bold" TextColor="#F59E0B" VerticalOptions="Center" WidthRequest="25" />
+                                    <Label Grid.Column="0"
+                                           Text="{Binding DisplayIndex, StringFormat='{0}.'}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           TextColor="#F59E0B"
+                                           VerticalOptions="Center"
+                                           WidthRequest="24" />
 
+                                    <!-- Titre et Artiste -->
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                        <Label Text="{Binding Song.Title}" FontSize="15" FontAttributes="Bold" TextColor="#F8FAFC" />
-                                        <Label Text="{Binding Song.Artist}" FontSize="13" TextColor="#94A3B8" />
+                                        <Label Text="{Binding Title}" FontSize="15" FontAttributes="Bold" TextColor="#F8FAFC" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Artist}" FontSize="13" TextColor="#94A3B8" LineBreakMode="TailTruncation" />
                                     </VerticalStackLayout>
 
-                                    <Label Grid.Column="2" Text="{Binding Song.Key}" FontSize="13" FontAttributes="Bold" TextColor="#C4B5FD" VerticalOptions="Center" />
+                                    <!-- Bouton Modifier le morceau -->
+                                    <Button Grid.Column="2"
+                                            Text="✎"
+                                            Clicked="OnEditSongClicked"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#262B36"
+                                            TextColor="#F8FAFC"
+                                            WidthRequest="36"
+                                            HeightRequest="36"
+                                            CornerRadius="18"
+                                            FontSize="15"
+                                            Padding="0" />
 
-                                    <!-- Bouton de suppression épuré -->
-                                    <Button Grid.Column="3" Text="✕" Clicked="OnRemoveSongClicked" CommandParameter="{Binding .}" BackgroundColor="#EF4444" TextColor="White" WidthRequest="36" HeightRequest="36" CornerRadius="18" />
+                                    <!-- Bouton Supprimer du set -->
+                                    <Button Grid.Column="3"
+                                            Text="✕"
+                                            Clicked="OnRemoveSongClicked"
+                                            CommandParameter="{Binding .}"
+                                            BackgroundColor="#EF4444"
+                                            TextColor="White"
+                                            WidthRequest="36"
+                                            HeightRequest="36"
+                                            CornerRadius="18"
+                                            FontSize="14"
+                                            Padding="0" />
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -71,10 +99,10 @@
             <!-- VUE 2 : Catalogue et recherche corrigée -->
             <VerticalStackLayout x:Name="View2Layout" Spacing="10" IsVisible="False">
                 <SearchBar Placeholder="Rechercher un morceau, un artiste..."
-                           TextChanged="OnSearchTextChanged"
-                           BackgroundColor="#1A1D24"
-                           TextColor="White"
-                           PlaceholderColor="#64748B" />
+               TextChanged="OnSearchTextChanged"
+               BackgroundColor="#1A1D24"
+               TextColor="White"
+               PlaceholderColor="#64748B" />
 
                 <CollectionView ItemsSource="{Binding FilteredCatalogueSongs}" SelectionMode="None">
                     <CollectionView.ItemTemplate>
@@ -83,13 +111,38 @@
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="OnSongCardTapped" CommandParameter="{Binding .}" />
                                 </Border.GestureRecognizers>
-                                <Grid ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center" ColumnSpacing="12">
-                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" Color="#F59E0B" CheckedChanged="OnCheckBoxChanged" />
+                                <Grid ColumnDefinitions="Auto, *, Auto, Auto" VerticalOptions="Center" ColumnSpacing="10">
+                                    <CheckBox Grid.Column="0"
+                                  IsChecked="{Binding IsSelected}"
+                                  Color="#F59E0B"
+                                  CheckedChanged="OnCheckBoxChanged"
+                                  VerticalOptions="Center" />
+
                                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                        <Label Text="{Binding Song.Title}" FontSize="15" FontAttributes="Bold" TextColor="#F8FAFC" />
-                                        <Label Text="{Binding Song.Artist}" FontSize="13" TextColor="#94A3B8" />
+                                        <Label Text="{Binding Title}" FontSize="15" FontAttributes="Bold" TextColor="#F8FAFC" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding Artist}" FontSize="13" TextColor="#94A3B8" LineBreakMode="TailTruncation" />
                                     </VerticalStackLayout>
-                                    <Label Grid.Column="2" Text="{Binding Song.Key}" FontSize="13" FontAttributes="Bold" TextColor="#C4B5FD" VerticalOptions="Center" />
+
+                                    <!-- Durée du morceau (mm:ss) -->
+                                    <Label Grid.Column="2"
+                               Text="{Binding FormattedDuration}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="#38BDF8"
+                               VerticalOptions="Center" />
+
+                                    <!-- Bouton Modifier le morceau -->
+                                    <Button Grid.Column="3"
+                                Text="✎"
+                                Clicked="OnEditSongClicked"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="#262B36"
+                                TextColor="#F8FAFC"
+                                WidthRequest="36"
+                                HeightRequest="36"
+                                CornerRadius="18"
+                                FontSize="15"
+                                Padding="0" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

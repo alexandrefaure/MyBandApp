@@ -47,7 +47,7 @@ public partial class SetlistsViewModel : ObservableObject
     {
         var allSongs = await _songService.GetSongsAsync();
         // On passe null pour la création
-        var editPage = new MyBandApp.Views.SetlistEditPage(null, allSongs, _setlistService);
+        var editPage = new MyBandApp.Views.SetlistEditPage(null, allSongs, _setlistService, _songService);
         await Shell.Current.Navigation.PushModalAsync(editPage);
     }
 
@@ -57,7 +57,7 @@ public partial class SetlistsViewModel : ObservableObject
         if (setlistWithSongs == null) return;
         var allSongs = await _songService.GetSongsAsync();
         // On passe l'objet SetlistWithSongs complet
-        var editPage = new MyBandApp.Views.SetlistEditPage(setlistWithSongs, allSongs, _setlistService);
+        var editPage = new MyBandApp.Views.SetlistEditPage(setlistWithSongs, allSongs, _setlistService, _songService);
         await Shell.Current.Navigation.PushModalAsync(editPage);
     }
 

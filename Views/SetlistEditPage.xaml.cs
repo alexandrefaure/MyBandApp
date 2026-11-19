@@ -32,6 +32,8 @@ public partial class SetlistEditPage : ContentPage
     }
 
     private string _totalDurationText = "00:00";
+    private readonly SongService _songService;
+
     public string TotalDurationText
     {
         get => _totalDurationText;
@@ -45,10 +47,7 @@ public partial class SetlistEditPage : ContentPage
 
     private void RecalculateTotalDuration()
     {
-        var totalSeconds = SelectedSongs
-            .Where(s => s.IsSelected) // garde uniquement les morceaux cochés/sélectionnés si SelectedSongs contient tous les morceaux
-            .Sum(s => s.Song.DurationSeconds);
-
+        var totalSeconds = SelectedSongs.Sum(s => s.Song?.DurationSeconds ?? 0);
         var total = TimeSpan.FromSeconds(totalSeconds);
 
         TotalDurationText = total.TotalHours >= 1
@@ -56,10 +55,11 @@ public partial class SetlistEditPage : ContentPage
             : $"{(int)total.TotalMinutes:00}:{total.Seconds:00}";
     }
 
-    public SetlistEditPage(SetlistWithSongs? setlistWithSongs, List<Song> allSongs, SetlistService setlistService)
+    public SetlistEditPage(SetlistWithSongs? setlistWithSongs, List<Song> allSongs, SetlistService setlistService, SongService songService)
     {
         InitializeComponent();
         _setlistService = setlistService;
+        _songService = songService;
 
         _currentSetlist = setlistWithSongs?.Setlist ?? new Setlist { Date = DateTime.Today };
         SetlistName = _currentSetlist.Name;
@@ -227,6 +227,7 @@ public partial class SetlistEditPage : ContentPage
         }
 
         _draggedItem = null;
+        RecalculateTotalDuration();
     }
 
     private async void OnSaveClicked(object sender, EventArgs e)
@@ -251,6 +252,57 @@ public partial class SetlistEditPage : ContentPage
         {
             await DisplayAlert("Erreur", ex.Message, "OK");
         }
+    }
+
+    private async void OnEditSongClicked(object sender, EventArgs e)
+    {
+        if (sender is not Button { CommandParameter: SelectableSongModel item } || item.Song is null)
+            return;
+
+        var popup = new SongDetailPopup(item.Song, _songService);
+        await Navigation.PushModalAsync(popup);
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            item.NotifySongChanged();
+
+            var idxCat = FilteredCatalogueSongs.IndexOf(item);
+            if (idxCat >= 0)
+            {
+                var newCatItem = new SelectableSongModel
+                {
+                    Song = item.Song,
+                    IsSelected = item.IsSelected,
+                    DisplayIndex = item.DisplayIndex
+                };
+                FilteredCatalogueSongs[idxCat] = newCatItem;
+            }
+
+            var selMatch = SelectedSongs.FirstOrDefault(s => s.Song?.Id == item.Song.Id);
+            if (selMatch is not null)
+            {
+                selMatch.NotifySongChanged();
+                var idxSel = SelectedSongs.IndexOf(selMatch);
+                if (idxSel >= 0)
+                {
+                    SelectedSongs[idxSel] = new SelectableSongModel
+                    {
+                        Song = item.Song,
+                        IsSelected = selMatch.IsSelected,
+                        DisplayIndex = selMatch.DisplayIndex
+                    };
+                }
+            }
+
+            var allMatch = AllSongs.FirstOrDefault(s => s.Song?.Id == item.Song.Id);
+            if (allMatch is not null)
+            {
+                allMatch.Song = item.Song;
+                allMatch.NotifySongChanged();
+            }
+
+            RecalculateTotalDuration();
+        });
     }
 
     private async void OnCancelClicked(object sender, EventArgs e)
