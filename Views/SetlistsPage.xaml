@@ -68,7 +68,16 @@
                                     <VerticalStackLayout Grid.Column="0" Spacing="4">
                                         <Label Text="{Binding Name}" FontSize="17" FontAttributes="Bold" TextColor="#F8FAFC" />
                                         <Label Text="{Binding FormattedDate}" FontSize="13" TextColor="#F59E0B" />
-                                        <Label Text="{Binding SummarySongsCount}" FontSize="12" TextColor="#94A3B8" />
+                                        <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
+                                            <Label Text="{Binding Songs.Count, StringFormat='{0} titres'}"
+                                                   FontSize="12"
+                                                   TextColor="#94A3B8" />
+                                            <Label Text="•" FontSize="12" TextColor="#64748B" />
+                                            <Label Text="{Binding FormattedTotalDuration}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#38BDF8" />
+                                        </HorizontalStackLayout>
                                     </VerticalStackLayout>
 
                                     <Label Grid.Column="1" Text="Éditer ➔" FontSize="13" TextColor="#94A3B8" VerticalOptions="Center" />

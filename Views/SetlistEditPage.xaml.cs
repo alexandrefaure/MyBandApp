@@ -31,6 +31,31 @@ public partial class SetlistEditPage : ContentPage
         set { _filteredCatalogueSongs = value; OnPropertyChanged(); }
     }
 
+    private string _totalDurationText = "00:00";
+    public string TotalDurationText
+    {
+        get => _totalDurationText;
+        set
+        {
+            if (_totalDurationText == value) return;
+            _totalDurationText = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void RecalculateTotalDuration()
+    {
+        var totalSeconds = SelectedSongs
+            .Where(s => s.IsSelected) // garde uniquement les morceaux cochés/sélectionnés si SelectedSongs contient tous les morceaux
+            .Sum(s => s.Song.DurationSeconds);
+
+        var total = TimeSpan.FromSeconds(totalSeconds);
+
+        TotalDurationText = total.TotalHours >= 1
+            ? $"{(int)total.TotalHours:00}h{total.Minutes:00}"
+            : $"{(int)total.TotalMinutes:00}:{total.Seconds:00}";
+    }
+
     public SetlistEditPage(SetlistWithSongs? setlistWithSongs, List<Song> allSongs, SetlistService setlistService)
     {
         InitializeComponent();
@@ -43,6 +68,7 @@ public partial class SetlistEditPage : ContentPage
         var selectedSongIds = setlistWithSongs?.Songs?.Select(s => s.Id).ToList() ?? new List<int>();
 
         InitializeLists(allSongs, selectedSongIds);
+        RecalculateTotalDuration();
         BindingContext = this;
     }
 
@@ -129,12 +155,14 @@ public partial class SetlistEditPage : ContentPage
         {
             model.IsSelected = !model.IsSelected;
             UpdateSelectedSongs();
+            RecalculateTotalDuration();
         }
     }
 
     private void OnCheckBoxChanged(object sender, CheckedChangedEventArgs e)
     {
         UpdateSelectedSongs();
+        RecalculateTotalDuration();
     }
 
     private void OnRemoveSongClicked(object sender, EventArgs e)
@@ -143,6 +171,7 @@ public partial class SetlistEditPage : ContentPage
         {
             model.IsSelected = false;
             UpdateSelectedSongs();
+            RecalculateTotalDuration();
         }
     }
 
